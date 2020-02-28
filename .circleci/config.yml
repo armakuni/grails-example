@@ -27,33 +27,33 @@ jobs:
         - .m2
         - .grails
   
-    unit_test:
-        executor: base
-        steps:
-        - checkout
-        - attach_workspace:
-            at: /home/circleci
-        - run:
-            name: Unit Tests
-            working_direcrory: /home/circleci/project
-            command: ./grailsw -coverage -xml test-app unit':' --non-interactive
-        - persist_to_workspace:
-            root: /home/circleci # configure this to something else with env var
-            paths: 
-            - .m2
-            - .grails
+  unit_test:
+    executor: base
+    steps:
+    - checkout
+    - attach_workspace:
+        at: /home/circleci
+    - run:
+        name: Unit Tests
+        working_direcrory: /home/circleci/project
+        command: ./grailsw -coverage -xml test-app unit':' --non-interactive
+    - persist_to_workspace:
+        root: /home/circleci # configure this to something else with env var
+        paths: 
+        - .m2
+        - .grails
 
   
-    functional_test:
-        executor: base
-        steps:
-        - checkout
-        - attach_workspace:
-            at: /home/circleci
-        - run:
-            name: Unit Tests
-            working_direcrory: /home/circleci/project
-            command: ./grailsw -coverage -xml test-app unit':' --non-interactive
+  functional_test:
+    executor: base
+    steps:
+    - checkout
+    - attach_workspace:
+        at: /home/circleci
+    - run:
+        name: Unit Tests
+        working_direcrory: /home/circleci/project
+        command: ./grailsw -coverage -xml test-app unit':' --non-interactive
     
   package:
     executor: base
