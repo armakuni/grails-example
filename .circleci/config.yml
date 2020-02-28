@@ -70,6 +70,10 @@ jobs:
         name: Package
         working_direcrory: /home/circleci/project
         command: ./grailsw war
+    - store_artifacts:
+      path: target/*.war
+      destination: war
+      
 
 workflows:
   version: 2
