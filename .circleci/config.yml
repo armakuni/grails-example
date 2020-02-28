@@ -37,6 +37,8 @@ jobs:
         name: Unit Tests
         working_direcrory: /home/circleci/project
         command: ./grailsw -coverage -xml test-app unit':' --non-interactive
+    - store_test_results:
+        path: target/test-reports
     - persist_to_workspace:
         root: /home/circleci # configure this to something else with env var
         paths: 
@@ -54,6 +56,9 @@ jobs:
         name: Unit Tests
         working_direcrory: /home/circleci/project
         command: ./grailsw -coverage -xml test-app unit':' --non-interactive
+    - store_test_results:
+        path: target/test-reports
+  
     
   package:
     executor: base
