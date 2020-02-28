@@ -71,8 +71,8 @@ jobs:
         working_direcrory: /home/circleci/project
         command: ./grailsw war
     - store_artifacts:
-      path: target/*.war
-      destination: war
+        path: target/*.war
+        destination: war
       
 
 workflows:
