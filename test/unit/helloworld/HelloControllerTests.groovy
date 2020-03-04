@@ -15,6 +15,6 @@ class HelloControllerTests extends Specification {
         controller.index()
 
         then:
-        response.text == "Hello World"
+        response.text == "Hello World!"
     }
 }
