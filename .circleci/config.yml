@@ -80,11 +80,6 @@ jobs:
     - store_artifacts:
         path: target/analysis-reports/test-results/codenarc
         destination: codenarc
-    - persist_to_workspace:
-        root: /home/circleci # configure this to something else with env var
-        paths: 
-        - .m2
-        - .grails
 
   checkmarx_analysis:
     executor: base
