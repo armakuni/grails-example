@@ -149,16 +149,16 @@ workflows:
     - codenarc_analysis:
         name: Codenarc
         requires:
-        - Unit Tests
-        - Functional Tests
+        - Compile
     - checkmarx_analysis: 
         name: Checkmarx
         requires:
-        - Unit Tests
-        - Functional Tests
+        - Compile
     - package: 
         name: Package
         requires:
+        - Unit Tests
+        - Fucntional Tests
         - Codenarc
         - Checkmarx
     - deploy:
