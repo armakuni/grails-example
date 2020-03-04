@@ -1,7 +1,5 @@
 package helloworld
 
-
-
 import grails.test.mixin.*
 import org.junit.*
 
