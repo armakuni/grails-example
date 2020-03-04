@@ -79,6 +79,7 @@ jobs:
         working_direcrory: /home/circleci/project
         command: k6 run --out json=performance-test-results.json test/performance/performance-config.js
     - store_artifacts:
+        path: /home/circleci/project
         destination: performance-test-results.json
 
   codenarc_analysis:
@@ -175,6 +176,10 @@ workflows:
         requires:
         - Package
         environment_name: si
+    - performance_test:
+        name: Performance Tests
+        requires:
+        - Deploy SI
     - deploy:
         name: Deploy Staging
         requires:
@@ -191,6 +196,7 @@ workflows:
         - Deploy SI
         - Deploy Staging
         - Deploy UAT
+        - Performance Tests
     - deploy:
         name: Deploy Production
         requires:
