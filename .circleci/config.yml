@@ -162,7 +162,28 @@ workflows:
         - Codenarc
         - Checkmarx
     - deploy:
-        name: Deploy Dev
+        name: Deploy SI
         requires:
         - Package
-        environment_name: dev
+        environment_name: si
+    - deploy:
+        name: Deploy Staging
+        requires:
+        - Package
+        environment_name: staging
+    - deploy:
+        name: Deploy UAT
+        requires:
+        - Package
+        environment_name: uat
+    - hold:
+        type: approval
+        requires:
+        - Deploy SI
+        - Deploy Staging
+        - Deploy UAT
+    - deploy:
+        name: Deploy Production
+        requires:
+        - hold
+        environment_name: prod
