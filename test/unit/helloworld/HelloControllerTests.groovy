@@ -1,5 +1,6 @@
 package helloworld
 
+import spock.lang.Specification
 import grails.test.mixin.*
 import org.junit.*
 
@@ -7,9 +8,13 @@ import org.junit.*
  * See the API for {@link grails.test.mixin.web.ControllerUnitTestMixin} for usage instructions
  */
 @TestFor(HelloController)
-class HelloControllerTests {
+class HelloControllerTests extends Specification {
 
-    void testSomething() {
-        println "Running Unit Tests"
+    void 'test hello'() {
+        when:
+        controller.index()
+
+        then:
+        response.text == "Hello World"
     }
 }

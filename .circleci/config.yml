@@ -20,9 +20,13 @@ jobs:
         keys:
         - hello-world-{{ checksum "grails-app/conf/BuildConfig.groovy" }}
     - run:
+        name: Install Dependencies
+        working_direcrory: /home/circleci/project
+        command: ./grailsw refresh-dependencies --non-interactive
+    - run:
         name: Compile
         working_direcrory: /home/circleci/project
-        command: ./grailsw compile --refresh-dependencies --non-interactive
+        command: ./grailsw compile --non-interactive
     - save_cache:
         key: hello-world-{{ checksum "grails-app/conf/BuildConfig.groovy" }}
         paths:
@@ -49,11 +53,6 @@ jobs:
     - store_artifacts:
         path: target/test-reports/cobertura
         destination: cobertura
-    # - persist_to_workspace:
-    #     root: /home/circleci # configure this to something else with env var
-    #     paths: 
-    #     - .m2
-    #     - .grails
 
   functional_test:
     executor: base
