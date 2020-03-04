@@ -76,7 +76,7 @@ jobs:
     - run:
         name: Codenarc
         working_direcrory: /home/circleci/project
-        command: ./grailsw codenarc --refresh-dependencies --non-interactive
+        command: echo "./grailsw codenarc --non-interactive"
     - store_artifacts:
         path: target/analysis-reports/test-results/codenarc
         destination: codenarc
