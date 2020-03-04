@@ -76,10 +76,15 @@ jobs:
     - run:
         name: Codenarc
         working_direcrory: /home/circleci/project
-        command: ./grailsw codenarc --non-interactive
+        command: ./grailsw codenarc --refresh-dependencies --non-interactive
     - store_artifacts:
         path: target/analysis-reports/test-results/codenarc
         destination: codenarc
+    - persist_to_workspace:
+        root: /home/circleci # configure this to something else with env var
+        paths: 
+        - .m2
+        - .grails
 
   checkmarx_analysis:
     executor: base
