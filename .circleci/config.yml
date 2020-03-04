@@ -1,5 +1,8 @@
 version: 2.1
 
+# orbs:
+#   checkmarx: nukengprod/checkmarx@0.1.0
+
 executors:
   base:
     docker:
@@ -39,13 +42,15 @@ jobs:
         command: ./grailsw -coverage -xml test-app unit':' --non-interactive
     - store_test_results:
         path: target/test-reports
+    - store_artifacts:
+        path: target/test-reports/cobertura
+        destination: cobertura
     - persist_to_workspace:
         root: /home/circleci # configure this to something else with env var
         paths: 
         - .m2
         - .grails
 
-  
   functional_test:
     executor: base
     steps:
@@ -53,13 +58,44 @@ jobs:
     - attach_workspace:
         at: /home/circleci
     - run:
-        name: Unit Tests
+        name: Functional Tests
         working_direcrory: /home/circleci/project
-        command: ./grailsw -coverage -xml test-app unit':' --non-interactive
+        command: ./grailsw -Dconfig.debug=true -noreloading -Dserver.port=9090 -Dfunctional.environment=anthill test-app functional':' --non-interactive
     - store_test_results:
         path: target/test-reports
-  
-    
+    - store_artifacts:
+        path: target/test-reports/TESTS-TestSuites.xml
+        destination: TestSuites
+
+  codenarc_analysis:
+    executor: base
+    steps:
+    - checkout
+    - attach_workspace:
+        at: /home/circleci
+    - run:
+        name: Codenarc
+        working_direcrory: /home/circleci/project
+        command: ./grailsw codenarc --non-interactive
+    - store_artifacts:
+        path: target/analysis-reports/test-results/codenarc
+        destination: codenarc
+
+  checkmarx_analysis:
+    executor: base
+    steps:
+    - checkout
+    - run: 
+        name: Checkmarx
+        working_direcrory: /home/circleci/project
+        command: echo "This step will run the checkmarx Orb when configured"
+    # - checkmarx/run-scan:
+    #     ABS_FILE_PATH: ABS_FILE_PATHs
+    #     PROJECT_NAME: PROJECT_NAME
+    #     STUNNEL_PSK: STUNNEL_PSK
+    #     WSDL_URL: WSDL_URL
+    #     IAM_ROLE: "arn:aws:iam::xxxxxxxxxxxx:role/role-to-assume"
+
   package:
     executor: base
     steps:
@@ -73,27 +109,55 @@ jobs:
     - store_artifacts:
         path: target/war
         destination: war
-      
+
+  deploy:
+    executor: base
+    parameters:
+      environment_name:
+        type: string
+        description: Name of the environment to deploy into
+    steps:
+    - checkout
+    - attach_workspace:
+        at: /home/circleci
+    - run:
+        name: Deploy to environment
+        command: echo "Deploying to << parameters.environment_name >>"
 
 workflows:
   version: 2
   capi:
     jobs:
     - compile:
+        name: Compile
         filters:
           branches:
             only: master
     - unit_test:
+        name: Unit Tests
         requires: 
-        - compile
-    # Example
+        - Compile
     - functional_test:
+        name: Functional Tests
         requires: 
-        - compile
-    # End Example
-    - package: 
+        - Compile
+    - codenarc_analysis:
+        name: Codenarc
         requires:
-        - unit_test
-        - functional_test
-
-          
+        - Unit Tests
+        - Functional Tests
+    - checkmarx_analysis: 
+        name: Checkmarx
+        requires:
+        - Unit Tests
+        - Functional Tests
+    - package: 
+        name: Package
+        requires:
+        - Codenarc
+        - Checkmarx
+    - deploy:
+        name: Deploy Dev
+        requires:
+        - Package
+        environment_name: dev
