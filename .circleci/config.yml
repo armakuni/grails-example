@@ -158,7 +158,7 @@ workflows:
         name: Package
         requires:
         - Unit Tests
-        - Fucntional Tests
+        - Functional Tests
         - Codenarc
         - Checkmarx
     - deploy:
