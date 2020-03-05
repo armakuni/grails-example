@@ -176,10 +176,6 @@ workflows:
         requires:
         - Package
         environment_name: si
-    - performance_test:
-        name: Performance Tests
-        requires:
-        - Deploy SI
     - deploy:
         name: Deploy Staging
         requires:
@@ -190,12 +186,15 @@ workflows:
         requires:
         - Package
         environment_name: uat
-    - hold:
-        type: approval
+    - performance_test:
+        name: Performance Tests
         requires:
         - Deploy SI
         - Deploy Staging
         - Deploy UAT
+    - hold:
+        type: approval
+        requires:
         - Performance Tests
     - deploy:
         name: Deploy Production
