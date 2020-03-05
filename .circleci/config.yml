@@ -21,11 +21,9 @@ jobs:
         - hello-world-{{ checksum "grails-app/conf/BuildConfig.groovy" }}
     - run:
         name: Install Dependencies
-        working_direcrory: /home/circleci/project
         command: ./grailsw refresh-dependencies --non-interactive
     - run:
         name: Compile
-        working_direcrory: /home/circleci/project
         command: ./grailsw compile --non-interactive
     - save_cache:
         key: hello-world-{{ checksum "grails-app/conf/BuildConfig.groovy" }}
@@ -46,7 +44,6 @@ jobs:
         at: /home/circleci
     - run:
         name: Unit Tests
-        working_direcrory: /home/circleci/project
         command: ./grailsw test-app -unit -coverage -xml --non-interactive
     - store_test_results:
         path: target/test-reports
@@ -62,7 +59,6 @@ jobs:
         at: /home/circleci
     - run:
         name: Functional Tests
-        working_direcrory: /home/circleci/project
         command: ./grailsw test-app -functional -noreloading -Dconfig.debug=true -Dserver.port=9090 -Dfunctional.environment=anthill --non-interactive
     - store_test_results:
         path: target/test-reports
@@ -76,7 +72,6 @@ jobs:
     - checkout
     - run:
         name: Functional Tests
-        working_direcrory: /home/circleci/project
         command: k6 run --out json=performance-test-results.json test/performance/performance-config.js
     - store_artifacts:
         path: /home/circleci/project
@@ -90,7 +85,6 @@ jobs:
         at: /home/circleci
     - run:
         name: Codenarc
-        working_direcrory: /home/circleci/project
         command: ./grailsw codenarc --non-interactive
     - store_artifacts:
         path: target/CodeNarcReport.html
@@ -102,7 +96,6 @@ jobs:
     - checkout
     - run: 
         name: Checkmarx
-        working_direcrory: /home/circleci/project
         command: echo "This step will run the checkmarx Orb when configured"
     # - checkmarx/run-scan:
     #     ABS_FILE_PATH: ABS_FILE_PATHs
@@ -119,7 +112,6 @@ jobs:
         at: /home/circleci
     - run:
         name: Package
-        working_direcrory: /home/circleci/project
         command: ./grailsw war
     - store_artifacts:
         path: target/war
