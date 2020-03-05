@@ -138,10 +138,10 @@ master_only: &master_only
       only: master
 
 workflows:
-  version: 2
+  version: 4
   capi:
     jobs:
-    - compile:
+    - compile-batman:
         name: Compile
     - unit_test:
         name: Unit Tests
