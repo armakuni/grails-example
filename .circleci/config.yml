@@ -139,15 +139,18 @@ jobs:
         name: Deploy to environment
         command: echo "Deploying to << parameters.environment_name >>"
 
+## Workflow filters
+master_only: &master_only
+  filters:
+    branches:
+      only: master
+
 workflows:
   version: 2
   capi:
     jobs:
     - compile:
         name: Compile
-        filters:
-          branches:
-            only: master
     - unit_test:
         name: Unit Tests
         requires: 
@@ -177,27 +180,33 @@ workflows:
         - Package
         environment_name: si
     - deploy:
+        <<: *master_only
         name: Deploy Staging
         requires:
         - Package
         environment_name: staging
     - deploy:
+        <<: *master_only
         name: Deploy UAT
         requires:
         - Package
         environment_name: uat
     - performance_test:
+        <<: *master_only
         name: Performance Tests
         requires:
         - Deploy SI
         - Deploy Staging
         - Deploy UAT
     - hold:
+        <<: *master_only
         type: approval
         requires:
         - Performance Tests
     - deploy:
+        <<: *master_only
         name: Deploy Production
         requires:
         - hold
         environment_name: prod
+    
