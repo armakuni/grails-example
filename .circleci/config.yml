@@ -30,7 +30,7 @@ jobs:
         paths:
         - /home/circleci/.m2
     - persist_to_workspace:
-        root: /home/circleci # configure this to something else with env var
+        root: /home/circleci
         paths: 
         - .m2
         - .grails
@@ -167,6 +167,7 @@ workflows:
         - Codenarc
         - Checkmarx
     - deploy:
+        <<: *master_only
         name: Deploy SI
         requires:
         - Package
